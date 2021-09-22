@@ -5,6 +5,8 @@ const defaultState = {
   list: []
 }
 //reducer可以接收state 但绝不能修改state 要深拷贝
+//只有store可以改变自己的内容
+// reducer必须是纯函数， 纯函数是指，给固定的输入就一定会有固定的输出，而且不会有任何副作用
 // eslint-disable-next-line import/no-anonymous-default-export
 export default ( state= defaultState, action ) => {
   if(action.type === CHANGE_INPUT_VALUE) {
