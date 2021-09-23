@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import 'antd/dist/antd.css';
-import { Input, Button, List } from 'antd';
 import store from './store';
 import { getInputChangeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreators';
-// import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM} from './store/actionTypes';
+import TodoListUI from './TodoListUI';
 
 class TodoList extends Component {
 
@@ -13,34 +12,19 @@ class TodoList extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.handleBtnClick = this.handleBtnClick.bind(this);
+    this.handleItemDelete = this.handleItemDelete.bind(this);
     store.subscribe(this.handleStoreChange); //store里的数据一旦有变化，subscribe里的函数就可以被自动执行
-
   }
 
   render(){
     return (
-      <div>
-       <div style={{marginTop:'10px', marginLeft:'10px'}}>
-          <Input 
-            value={this.state.inputValue} 
-            placeholder="todo info" 
-            style={{width: 300, marginRight:'10px'}}
-            onChange={this.handleInputChange}
-          />
-          <Button 
-            type="primary"
-            onClick={this.handleBtnClick}
-          >
-            Submit
-          </Button>
-       </div>
-       <List
-          style={{marginTop:'10px', marginLeft:'10px', width:300}}
-          bordered
-          dataSource={this.state.list}
-          renderItem={(item, index) => (<List.Item onClick={this.handleItemDelete.bind(this,index)}>{item}</List.Item>)}
-        />
-      </div>
+      <TodoListUI
+        inputValue = {this.state.inputValue}  // 通过props向子组件TodoListUI传值
+        list = {this.state.list} // 通过props向子组件TodoListUI传值
+        handleInputChange = {this.handleInputChange} // 通过props向子组件TodoListUI传方法
+        handleBtnClick = {this.handleBtnClick}  // 通过props向子组件TodoListUI传方法
+        handleItemDelete = {this.handleItemDelete}  // 通过props向子组件TodoListUI传方法
+      />
     )
   }
 
