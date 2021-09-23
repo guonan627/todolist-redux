@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import store from './store';
-import { getInputChangeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreators';
-import TodoListUI from './TodoListUI';
+import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM} from './store/actionTypes';
 
 class TodoList extends Component {
 
@@ -29,14 +28,10 @@ class TodoList extends Component {
   }
 
   handleInputChange(e){
-    // const action = {
-    //   type: CHANGE_INPUT_VALUE,
-    //   value: e.target.value
-    // }
-    
-    // 引入了actionCreators之后，写成
-    const action = getInputChangeAction(e.target.value);
-
+    const action = {
+      type: CHANGE_INPUT_VALUE,
+      value: e.target.value
+    }
     store.dispatch(action); //把action的内容传给store
   }
 
@@ -45,19 +40,17 @@ class TodoList extends Component {
   }
   
   handleBtnClick(){
-    // const action = {
-    //   type: ADD_TODO_ITEM
-    // };
-    const action = getAddItemAction();
+    const action = {
+      type: ADD_TODO_ITEM,
+    }
     store.dispatch(action);
   }
 
   handleItemDelete(index){
-  //  const action = {
-  //    type: DELETE_TODO_ITEM,
-  //    index
-  //  }
-   const action = getDeleteItemAction(index);
+   const action = {
+     type: DELETE_TODO_ITEM,
+     index
+   }
    store.dispatch(action);
   }
 
