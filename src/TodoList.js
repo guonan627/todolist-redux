@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import store from './store';
 import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM} from './store/actionTypes';
+import TodoListUI from './TodoListUI';
 
 class TodoList extends Component {
 
