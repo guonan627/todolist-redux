@@ -1,4 +1,5 @@
 // import React, {Component} from "react";
+import React from "react";
 import { Input, Button, List } from 'antd';
 
 // //TodoListUI 是一个UI组件 专门负责页面渲染
@@ -55,7 +56,7 @@ const TodoListUI = (props) => {
         style={{marginTop:'10px', marginLeft:'10px', width:300}}
         bordered
         dataSource={props.list}
-        renderItem={(item, index) => (<List.Item onClick={(index) => props.handleItemDelete(index)}>{item}</List.Item>)}
+        renderItem={(item, index) => (<List.Item onClick={() => props.handleItemDelete(index)}>{item}</List.Item>)}
       />
     </div>
   )
