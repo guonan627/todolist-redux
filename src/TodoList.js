@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import store from './store';
-import {getTodoList, getInputChangeAction,getAddItemAction, getDeleteItemAction} from './store/actionCreators';
+// import {getTodoList, getInputChangeAction,getAddItemAction, getDeleteItemAction} from './store/actionCreators';
+import { getInitList, getInputChangeAction,getAddItemAction, getDeleteItemAction} from './store/actionCreators';
 import TodoListUI from './TodoListUI';
 // import axios from 'axios';
 
@@ -36,12 +37,16 @@ class TodoList extends Component {
     //   const action = initListAction(data);
     //   store.dispatch(action);
     // })
+
     // 之前把异步的ajax 放在生命周期里不太好 容易造成组件越来越大 建议把复杂的逻辑或异步拆分 
     // 这里借助thunk 就可以把它放入actioncreators里面管理了 做自动化测试也会简单很多
-    
     // 使用了redux-thunk之后 action不仅仅可以是JS对象了， 也可以是一个函数
-    const action = getTodoList();
-    store.dispatch(action);
+  //   const action = getTodoList();
+  //   store.dispatch(action);
+
+  //用redux-saga之后
+    const action = getInitList();
+    store.dispatch(action); //action不光reducer能接收到， saga.js也能接收到
   }
 
   handleInputChange(e){
