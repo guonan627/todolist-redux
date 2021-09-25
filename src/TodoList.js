@@ -1,84 +1,76 @@
-import React, {Component} from 'react';
-import 'antd/dist/antd.css';
-import store from './store';
-// import {getTodoList, getInputChangeAction,getAddItemAction, getDeleteItemAction} from './store/actionCreators';
-import { getInitList, getInputChangeAction,getAddItemAction, getDeleteItemAction} from './store/actionCreators';
-import TodoListUI from './TodoListUI';
-// import axios from 'axios';
+import React from "react";
+import { connect } from "react-redux";
+import {getInputChangeAction, getAddItemAction, getDeleteItemAction}  from './store/actionCreators';
 
-class TodoList extends Component {
+const TodoList = (props) => {
+  //代码提升 解构赋值
+  // 定义一个inputValue的变量值等于props.inputValue, 依次类推......
+  // const inputValue = props.inputValue, 依次类推.....
+  const { inputValue, list, handleInputChange, handleBtnClick, handleItemDelete } = props;
+  return (
+    <div>
+      <div>
+        <input
+          // value={props.inputValue}
+          // {/* value里的值this.props.inputValue就是store里的inputValue, 因为用了mapStateToProps方法 */}
+          value={inputValue}
+          // onChange={props.handleInputChange}
+          // {/* 因为用了mapDispatchToProps方法, 可以通过props.dispatch调用store.dispatch方法 */}
+          onChange={ handleInputChange}
+        />
+        <button
+          // onClick={props.handleBtnClick }
+          onClick={ handleBtnClick }
+        >
+          submit
+        </button>
+      </div>
+      <ul>
+        {
+          list.map((item, index) => {
+            return (
+              <li key={index} onClick={ () => handleItemDelete(index) }>
+                {item}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  );
+};
 
-  constructor(props){
-    super(props);
-    this.state = store.getState(); // state里的数据要来源于store里的数据
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleStoreChange = this.handleStoreChange.bind(this);
-    this.handleBtnClick = this.handleBtnClick.bind(this);
-    this.handleItemDelete = this.handleItemDelete.bind(this);
-    store.subscribe(this.handleStoreChange); //store里的数据一旦有变化，subscribe里的函数就可以被自动执行
-  }
+// 通过mapStateToProps去获取store里的数据
+// mapStateToProps把store里的数据映射给组件，变成组件的props
+// state指的是store里的数据，
+// 把store数据里的inputValue映射到TodoList组件的props里面的inputValue上
+const mapStateToProps = (state) => {
+  return {
+    inputValue: state.inputValue,
+    list: state.list,
+  };
+};
 
-  render(){
-    return (
-      <TodoListUI
-        inputValue = {this.state.inputValue}  // 通过props向子组件TodoListUI传值
-        list = {this.state.list} // 通过props向子组件TodoListUI传值
-        handleInputChange = {this.handleInputChange} // 通过props向子组件TodoListUI传方法
-        handleBtnClick = {this.handleBtnClick}  // 通过props向子组件TodoListUI传方法
-        handleItemDelete = {this.handleItemDelete}  // 通过props向子组件TodoListUI传方法
-      />
-    )
-  }
+// 通过mapDispatchToProps对store的数据做修改
+// dispatch指的是store.dispatch 派发方法action给store
+// 把store的dispatch方法挂载到组件的props上
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleInputChange(e) {
+      const action = getInputChangeAction(e.target.value);
+      dispatch(action);
+    },
+    handleBtnClick() {
+      const action = getAddItemAction();
+      dispatch(action);
+    },
+    handleItemDelete(index) {
+      const action = getDeleteItemAction(index);
+      dispatch(action);
+    }
+  };
+};
 
-  componentDidMount(){
-    // axios.get('/list.json').then((res)=>{
-    //   const data = res.data;
-    //   // console.log(data);
-    //   const action = initListAction(data);
-    //   store.dispatch(action);
-    // })
-
-    // 之前把异步的ajax 放在生命周期里不太好 容易造成组件越来越大 建议把复杂的逻辑或异步拆分 
-    // 这里借助thunk 就可以把它放入actioncreators里面管理了 做自动化测试也会简单很多
-    // 使用了redux-thunk之后 action不仅仅可以是JS对象了， 也可以是一个函数
-  //   const action = getTodoList();
-  //   store.dispatch(action);
-
-  //用redux-saga之后
-    const action = getInitList();
-    store.dispatch(action); //action不光reducer能接收到， saga.js也能接收到
-  }
-
-  handleInputChange(e){
-    // const action = {
-    //   type: CHANGE_INPUT_VALUE,
-    //   value: e.target.value
-    // }
-    const action = getInputChangeAction(e.target.value);
-    store.dispatch(action); //把action的内容传给store
-  }
-
-  handleStoreChange() {
-    this.setState(store.getState()); //组件里的state和store里的state同步更新
-  }
-  
-  handleBtnClick(){
-    // const action = {
-    //   type: ADD_TODO_ITEM,
-    // }
-    const action = getAddItemAction();
-    store.dispatch(action);
-  }
-
-  handleItemDelete(index){
-  //  const action = {
-  //    type: DELETE_TODO_ITEM,
-  //    index
-  //  }
-  const action = getDeleteItemAction(index);
-  store.dispatch(action);
-  }
-
-}
-
-export default TodoList;
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+//connect让组件和store做连接，按照apStateToProps和mapDispatchToProps的规则做连接
+// 因为TodoList在Provider组件里，所以可以连接
